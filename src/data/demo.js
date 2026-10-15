@@ -1,17 +1,6 @@
-import heroAsset from '../assets/hero.jpg.asset.json';
-import residenceAsset from '../assets/residence.jpg.asset.json';
-import officeAsset from '../assets/office.jpg.asset.json';
-import houseAsset from '../assets/house.jpg.asset.json';
-import constructionAsset from '../assets/construction.jpg.asset.json';
-import buildingAsset from '../assets/building.jpg.asset.json';
-import interiorAsset from '../assets/interior.jpg.asset.json';
-import structureAsset from '../assets/structure.jpg.asset.json';
-import detailAsset from '../assets/detail.jpg.asset.json';
-import renovationAsset from '../assets/renovation.jpg.asset.json';
-// Photos are served from CDN asset storage (stable URLs) instead of bundled
-// files, so imports in saved demo data never break on deployment.
-const pointers = {hero:heroAsset,residence:residenceAsset,office:officeAsset,house:houseAsset,construction:constructionAsset,building:buildingAsset,interior:interiorAsset,structure:structureAsset,detail:detailAsset,renovation:renovationAsset};
-export const images = Object.fromEntries(Object.entries(pointers).map(([k,v])=>[k,v.url]));
+// Photos live in public/images so they load on any host (Lovable, Vercel, etc.).
+const keys = ['hero','residence','office','house','construction','building','interior','structure','detail','renovation'];
+export const images = Object.fromEntries(keys.map(k=>[k,`/images/${k}.jpg`]));
 export const paths = ['/', '/about', '/services', '/projects', '/gallery', '/contact'];
 export const defaultData = {
  company: { name:'INFRAVISION BUILDCON LLP', description:'INFRAVISION BUILDCON LLP is focused on building construction, combining thoughtful planning, practical execution, and attention to detail to create dependable spaces. Our approach emphasizes construction quality, safety awareness, clear communication, and professional project coordination.', phone:'5135453235',email:'infravision@gmail.com',address:'' },

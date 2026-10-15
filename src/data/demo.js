@@ -43,8 +43,21 @@ export const defaultData = {
 };
 export const cloneDefaults=()=>JSON.parse(JSON.stringify(defaultData));
 export const STORAGE_KEY='infravision-demo-v1';
+// An image reference is current when it points at CDN asset storage, a remote
+// URL, or inline data. Anything else (e.g. old bundled /src/assets paths that
+// broke on deployment) is treated as stale.
+const isCurrentImage = (value) => typeof value === 'string' && (value.startsWith('/__l5e/') || /^https?:\/\//i.test(value) || value.startsWith('data:image/'));
+function migrateImages(data, base) {
+ if (!isCurrentImage(data.hero.image)) data.hero.image = base.hero.image;
+ if (!isCurrentImage(data.about.image)) data.about.image = base.about.image;
+ for (const key of ['services', 'projects', 'gallery']) {
+  const byId = new Map(base[key].map((x) => [x.id, x]));
+  data[key] = data[key].map((item) => { const def = byId.get(item.id); return (!isCurrentImage(item.image) && def) ? { ...item, image: def.image } : item; });
+ }
+ return data;
+}
 export function readData(storage) {
- try { const raw=storage.getItem(STORAGE_KEY); if(!raw)return cloneDefaults(); const data=JSON.parse(raw); if(!data||typeof data!=='object')return cloneDefaults(); const base=cloneDefaults(); for(const key of Object.keys(base)){ if(Array.isArray(base[key])) { if(!Array.isArray(data[key]) || data[key].some(item=>!item || typeof item!=='object' || typeof item.id!=='string')) throw new Error('Invalid data'); base[key]=data[key]; } else if(data[key] && typeof data[key]==='object' && !Array.isArray(data[key]))base[key]={...base[key],...data[key]}; } return base; }catch{return cloneDefaults();}
+ try { const raw=storage.getItem(STORAGE_KEY); if(!raw)return cloneDefaults(); const data=JSON.parse(raw); if(!data||typeof data!=='object')return cloneDefaults(); const base=cloneDefaults(); for(const key of Object.keys(base)){ if(Array.isArray(base[key])) { if(!Array.isArray(data[key]) || data[key].some(item=>!item || typeof item!=='object' || typeof item.id!=='string')) throw new Error('Invalid data'); base[key]=data[key]; } else if(data[key] && typeof data[key]==='object' && !Array.isArray(data[key]))base[key]={...base[key],...data[key]}; } return migrateImages(base, cloneDefaults()); }catch{return cloneDefaults();}
 }
 export function safeImage(value){ return typeof value==='string' && (/^https?:\/\//i.test(value)||/^\/(src|assets|__l5e)\//.test(value)||value.startsWith('data:image/')) ? value : ''; }
 export function validPhone(value){return /^[+\d\s().-]{7,25}$/.test(value) && value.replace(/\D/g,'').length>=7;}

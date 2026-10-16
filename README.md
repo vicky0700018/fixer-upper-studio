@@ -29,3 +29,4 @@ Publish through Lovable for the existing platform runtime and hosted photographs
 Before publishing, verify public navigation/back and forward, mobile menus, portfolio search/filters/details, gallery enlargement/Escape, demo form validation, inquiry management, login/logout, all content editors, refresh persistence, and demo restoration. This demo admin is not suitable as a production CMS without secure authentication and persistent server-side storage.
 
 Developer credit: Designed and development by SOSynch Ai Tech.
+nmcnvc
